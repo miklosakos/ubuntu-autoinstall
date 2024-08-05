@@ -21,9 +21,13 @@ autoinstall:
     users:
       - name: user
         gecos: 'Standard User'
-        groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, libvirt, lpadmin, dialout, docker
+        groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, lpadmin, dialout
         passwd: '$y$j9T$bOCNUW5m1vZBiWlY96qlQ.$/NfEohbNgJSeVg51pp.cnJhTVrzKcy8.8MWGgMb6R41'
         shell: /bin/bash
+    runcmd:
+      - [usermod, -aG, libvirt, user]
+      - [usermod, -aG, docker, user]
+      - [systemctl, reboot]
   apt:
     sources:
       google-chrome-repo:
@@ -439,3 +443,5 @@ autoinstall:
     - curtin in-target --target=/target -- chmod +x /nm-netplan.sh
     - curtin in-target --target=/target -- /nm-netplan.sh
     - curtin in-target --target=/target -- rm /nm-netplan.sh
+    - curtin in-target --target=/target -- netplan generate
+    - curint in-target --target=/target -- netplan apply
