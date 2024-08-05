@@ -22,7 +22,7 @@ autoinstall:
       - name: user
         gecos: 'Standard User'
         groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, lpadmin, dialout
-        passwd: '$y$j9T$bOCNUW5m1vZBiWlY96qlQ.$/NfEohbNgJSeVg51pp.cnJhTVrzKcy8.8MWGgMb6R41'
+        passwd: '$y$j9T$N5JoGTfh1YxoU1WS2SneV.$RrrGHBClDxuZgGK7DRPkcpiv9r/ywsKAC7Kr7ZNo474'
         shell: /bin/bash
     runcmd:
       - [usermod, -aG, libvirt, user]
