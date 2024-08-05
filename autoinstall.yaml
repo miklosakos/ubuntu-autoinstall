@@ -31,6 +31,8 @@ autoinstall:
       - [snap, set, network-manager, defaultrenderer=true]
       - [netplan, generate]
       - [netplan, apply]
+      - [sed, -i, 's/\GRUB_CMDLINE_LINUX_DEFAULT=\"\b/&quiet splash /', /etc/default/grub]
+      - [update-grub]
       - [systemctl, reboot]
   apt:
     sources:
