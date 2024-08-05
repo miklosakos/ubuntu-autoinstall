@@ -31,13 +31,13 @@ autoinstall:
   apt:
     sources:
       google-chrome-repo:
-        source: deb [arch=amd64 signed-by=$KEY_FILE] http://dl.google.com/linux/chrome/deb/ stable main
+        source: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
         keyid: EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796
       virtualbox-repo:
-        source: deb [arch=amd64 signed-by=$KEY_FILE] https://download.virtualbox.org/virtualbox/debian noble contrib
+        source: deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian noble contrib
         keyid: B9F8D658297AF3EFC18D5CDFA2F683C52980AECF
       docker-repo:
-        source: deb [arch=amd64 signed-by=$KEY_FILE] https://download.docker.com/linux/ubuntu noble stable
+        source: deb [arch=amd64] https://download.docker.com/linux/ubuntu noble stable
         keyid: 8D81803C0EBFCD88
   snaps:
     - name: firefox
