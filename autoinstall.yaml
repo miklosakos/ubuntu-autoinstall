@@ -27,11 +27,24 @@ autoinstall:
     runcmd:
       - [usermod, -aG, libvirt, user]
       - [usermod, -aG, docker, user]
-      - [rm, /etc/netplan/50*.yaml]
-      - [snap, set, network-manager, defaultrenderer=true]
-      - [netplan, generate]
-      - [netplan, apply]
       - [sed, -i, 's/\GRUB_CMDLINE_LINUX_DEFAULT=\"\b/&quiet splash /', /etc/default/grub]
+      - [sed, -s, 's/managed=false/managed=true/g', /etc/NetworkManager/NetworkManager.conf]
+      - [mkdir, -p, /autoinstall/backup]
+      - [mv, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf, /autoinstall/backup]
+      - [touch, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf]
+      - |
+        cat << EOF > /etc/netplan/50-cloud-init.yaml
+        network:
+          version: 2
+          renderer: NetworkManager
+        EOF
+      - |
+        cat << EOF > /etc/timezone
+        Europe/Budapest
+        EOF
+      - [ln, -sf, /usr/share/zoneinfo/Europe/Budapest, /etc/localtime]
+      - [dpkg-reconfigure, -fnoninteractive, tzdata]
+      - [netplan, apply]
       - [update-grub]
       - [systemctl, reboot]
   apt:
