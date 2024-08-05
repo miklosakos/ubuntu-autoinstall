@@ -3,7 +3,6 @@ autoinstall:
   version: 1
   interactive-sections:
     - network
-    - identity
     - storage
   locale: en_US
   storage:
@@ -440,4 +439,3 @@ autoinstall:
     - curtin in-target --target=/target -- chmod +x /nm-netplan.sh
     - curtin in-target --target=/target -- /nm-netplan.sh
     - curtin in-target --target=/target -- rm /nm-netplan.sh
-        
