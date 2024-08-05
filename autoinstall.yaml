@@ -27,6 +27,10 @@ autoinstall:
     runcmd:
       - [usermod, -aG, libvirt, user]
       - [usermod, -aG, docker, user]
+      - [rm, /etc/netplan/50*.yaml]
+      - [snap, set, network-manager, defaultrenderer=true]
+      - [netplan, generate]
+      - [netplan, apply]
       - [systemctl, reboot]
   apt:
     sources:
@@ -63,10 +67,5 @@ autoinstall:
   late-commands:
     - curtin in-target --target=/target -- systemctl disable systemd-networkd systemd-networkd.socket
     - curtin in-target --target=/target -- systemctl enable docker libvirtd NetworkManager
-    - curtin in-target --target=/target -- rm /etc/netplan/50*.yaml
-    - curtin in-target --target=/target -- curl https://furit.systems/nm-netplan.sh -o /nm-netplan.sh
-    - curtin in-target --target=/target -- chmod +x /nm-netplan.sh
-    - curtin in-target --target=/target -- /nm-netplan.sh
-    - curtin in-target --target=/target -- rm /nm-netplan.sh
     - curtin in-target --target=/target -- netplan generate
     - curint in-target --target=/target -- netplan apply
