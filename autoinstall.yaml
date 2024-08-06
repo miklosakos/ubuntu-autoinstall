@@ -28,7 +28,7 @@ autoinstall:
         lock_passwd: false
     runcmd:
       - [chown, root:adm, /etc/hosts]
-      - [chmod, 664, /etc/hosts]
+      - [chmod, '664', /etc/hosts]
       - [sed, -i, '15 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
       - [sed, -i, '50 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
       - [sed, -i, '83 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
