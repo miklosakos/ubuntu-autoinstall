@@ -24,6 +24,7 @@ autoinstall:
         groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, lpadmin, dialout
         passwd: '$y$j9T$N5JoGTfh1YxoU1WS2SneV.$RrrGHBClDxuZgGK7DRPkcpiv9r/ywsKAC7Kr7ZNo474'
         shell: /bin/bash
+        lock_passwd: false
     runcmd:
       - [usermod, -aG, libvirt, user]
       - [usermod, -aG, docker, user]
