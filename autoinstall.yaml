@@ -21,14 +21,14 @@ autoinstall:
     users:
       - name: user
         gecos: 'Standard User'
-        groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, lpadmin, dialout
+        groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, lpadmin, dialout, libvirt, docker
         passwd: '$y$j9T$N5JoGTfh1YxoU1WS2SneV.$RrrGHBClDxuZgGK7DRPkcpiv9r/ywsKAC7Kr7ZNo474'
         shell: /bin/bash
         lock_passwd: false
     runcmd:
-      - [usermod, -aG, libvirt, user]
-      - [usermod, -aG, docker, user]
       - [sed, -i, 's/\GRUB_CMDLINE_LINUX_DEFAULT=\"/&quiet splash /', /etc/default/grub]
+      - [sed, -i, 's/GRUB_TIMEOUT=0/GRUB_TIMEOUT=5/g', /etc/default/grub]
+      - [sed, -i, 's/GRUB_TIMEOUT_STYLE=hidden/GRUB_TIMEOUT_STYLE=countdown/g', /etc/default/grub]
       - [sed, -i, 's/managed=false/managed=true/g', /etc/NetworkManager/NetworkManager.conf]
       - [mkdir, -p, /autoinstall/backup]
       - [mv, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf, /autoinstall/backup]
@@ -47,6 +47,7 @@ autoinstall:
       - [dpkg-reconfigure, -fnoninteractive, tzdata]
       - [netplan, apply]
       - [update-grub]
+      - [snap, connect, bitwarden:password-manager-service]
       - [systemctl, reboot]
   apt:
     sources:
@@ -59,15 +60,21 @@ autoinstall:
       docker-repo:
         source: deb [arch=amd64] https://download.docker.com/linux/ubuntu noble stable
         keyid: 8D81803C0EBFCD88
+      azluxfr:
+        source: deb [arch=amd64] http://packages.azlux.fr/debian stable main
+        keyid: 98B824A5FA7D3A10FDB225B7CA548A0A0312D8E6
+      obs-studio:
+        source: ppa:obsproject/obs-studio
   snaps:
     - name: firefox
+    - name: brave
+    - name: thunderbird
     - name: slack
     - name: bitwarden
     - name: code
   packages:
     - libreoffice
     - kubuntu-desktop
-    - thunderbird
     - mc
     - vlc
     - ffmpeg
@@ -80,6 +87,23 @@ autoinstall:
     - containerd.io
     - docker-buildx-plugin
     - docker-compose-plugin
+    - docker-ctop
+    - mpv
+    - wireguard
+    - network-manager-openvpn
+    - iperf3
+    - ansible
+    - gimp
+    - wireshark
+    - net-tools
+    - dnsutils
+    - whois
+    - kazam
+    - tilix
+    - tcpdump
+    - gimp
+    - python3-venv
+    - obs-studio
   late-commands:
     - curtin in-target --target=/target -- systemctl disable systemd-networkd systemd-networkd.socket
     - curtin in-target --target=/target -- systemctl enable docker libvirtd NetworkManager

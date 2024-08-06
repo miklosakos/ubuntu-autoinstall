@@ -14,5 +14,38 @@ Included extras:
 - google-chrome-stable (from Google's repos)
 - VirtualBox (from Oracle's repos)
 - Docker (from Docker's official repos)
+- docker-ctop (azlux.fr repo)
+- obs-studio (ppa:obsproject/obs-studio)
+
+From Snap:
+- firefox
+- brave
+- thunderbird
+- slack
+- bitwarden
+- VS Code
+
+From Ubuntu APT:
+- libreoffice
+- mc
+- vlc
+- ffmpeg
+- virt-manager
+- htop
+- mpv
+- wireguard
+- network-manager-openvpn
+- iperf3
+- ansible
+- gimp
+- wireshark
+- net-tools
+- dnsutils
+- whois
+- kazam
+- tilix
+- tcpdump
+- gimp
+- python3-venv
 
 Based on: Ubuntu 24.04 LTS Server with `kubuntu-desktop`.
