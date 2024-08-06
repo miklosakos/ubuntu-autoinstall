@@ -22,7 +22,7 @@ autoinstall:
     users:
       - name: user
         gecos: 'Standard User'
-        groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, lpadmin, dialout, libvirt, docker
+        groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, lpadmin, dialout, libvirt, docker, ubridge, wireshark
         passwd: '$y$j9T$N5JoGTfh1YxoU1WS2SneV.$RrrGHBClDxuZgGK7DRPkcpiv9r/ywsKAC7Kr7ZNo474'
         shell: /bin/bash
         lock_passwd: false
@@ -118,6 +118,8 @@ autoinstall:
     - vagrant
     - gns3-server
     - gns3-gui
+    - micro
+    - minicom
   late-commands:
     - curtin in-target --target=/target -- systemctl disable systemd-networkd systemd-networkd.socket
     - curtin in-target --target=/target -- systemctl enable docker libvirtd NetworkManager

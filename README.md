@@ -1,6 +1,7 @@
 # ubuntu-autoinstall
 
 Custom Ubuntu 24.04 LTS autoinstall for testing purposes.
+Desktop Environment: KUbuntu
 
 Unprivileged user credentials:
 - username: `user`
@@ -49,5 +50,5 @@ From Ubuntu APT:
 - tcpdump
 - gimp
 - python3-venv
-
-Based on: Ubuntu 24.04 LTS Server with `kubuntu-desktop`.
+- micro
+- minicom
