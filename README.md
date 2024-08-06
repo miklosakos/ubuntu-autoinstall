@@ -16,6 +16,8 @@ Included extras:
 - Docker (from Docker's official repos)
 - docker-ctop (azlux.fr repo)
 - obs-studio (ppa:obsproject/obs-studio)
+- vagrant (hashicorp repo)
+- gns3 (ppa:gns3/ppa)
 
 From Snap:
 - firefox

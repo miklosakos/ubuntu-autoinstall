@@ -71,6 +71,11 @@ autoinstall:
         keyid: 98B824A5FA7D3A10FDB225B7CA548A0A0312D8E6
       obs-studio:
         source: ppa:obsproject/obs-studio
+      hashicorp:
+        source: deb [arch=amd64] https://apt.releases.hashicorp.com noble main
+        keyid: 798AEC654E5C15428C8E42EEAA16FCBCA621E701
+      gns3:
+        source: ppa:gns3/ppa
   snaps:
     - name: firefox
     - name: brave
@@ -110,6 +115,9 @@ autoinstall:
     - gimp
     - python3-venv
     - obs-studio
+    - vagrant
+    - gns3-server
+    - gns3-gui
   late-commands:
     - curtin in-target --target=/target -- systemctl disable systemd-networkd systemd-networkd.socket
     - curtin in-target --target=/target -- systemctl enable docker libvirtd NetworkManager
