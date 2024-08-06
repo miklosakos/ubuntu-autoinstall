@@ -3,11 +3,11 @@ autoinstall:
   version: 1
   interactive-sections:
     - network
-    - storage
   locale: en_US
   storage:
     layout:
       name: lvm
+      sizing-policy: all
   identity:
     hostname: test
     realname: 'Default Admin user'
@@ -17,6 +17,7 @@ autoinstall:
     install-server: yes
     allow-pw: yes
   user-data:
+    timezone: geoip
     disable_root: false
     users:
       - name: user
@@ -26,12 +27,17 @@ autoinstall:
         shell: /bin/bash
         lock_passwd: false
     runcmd:
+      - [chown, root:adm, /etc/hosts]
+      - [chmod, 664, /etc/hosts]
+      - [sed, -i, '15 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
+      - [sed, -i, '50 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
+      - [sed, -i, '83 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
+      - [sed, -i, '86 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
       - [sed, -i, 's/\GRUB_CMDLINE_LINUX_DEFAULT=\"/&quiet splash /', /etc/default/grub]
       - [sed, -i, 's/GRUB_TIMEOUT=0/GRUB_TIMEOUT=5/g', /etc/default/grub]
       - [sed, -i, 's/GRUB_TIMEOUT_STYLE=hidden/GRUB_TIMEOUT_STYLE=countdown/g', /etc/default/grub]
       - [sed, -i, 's/managed=false/managed=true/g', /etc/NetworkManager/NetworkManager.conf]
-      - [mkdir, -p, /autoinstall/backup]
-      - [mv, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf, /autoinstall/backup]
+      - [rm, -rf, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf]
       - [touch, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf]
       - |
         cat << EOF > /etc/netplan/50-cloud-init.yaml
@@ -43,11 +49,13 @@ autoinstall:
         cat << EOF > /etc/timezone
         Europe/Budapest
         EOF
-      - [ln, -sf, /usr/share/zoneinfo/Europe/Budapest, /etc/localtime]
-      - [dpkg-reconfigure, -fnoninteractive, tzdata]
       - [netplan, apply]
       - [update-grub]
       - [snap, connect, bitwarden:password-manager-service]
+      - [apt-get, remove, ubuntu-server, ubuntu-server-minimal, -y]
+      - [apt-get, update]
+      - [apt-get, upgrade, -y]
+      - [apt-get, autoremove, -y]
       - [systemctl, reboot]
   apt:
     sources:
