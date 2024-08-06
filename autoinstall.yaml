@@ -28,8 +28,8 @@ autoinstall:
     runcmd:
       - [usermod, -aG, libvirt, user]
       - [usermod, -aG, docker, user]
-      - [sed, -i, 's/\GRUB_CMDLINE_LINUX_DEFAULT=\"\b/&quiet splash /', /etc/default/grub]
-      - [sed, -s, 's/managed=false/managed=true/g', /etc/NetworkManager/NetworkManager.conf]
+      - [sed, -i, 's/\GRUB_CMDLINE_LINUX_DEFAULT=\"/&quiet splash /', /etc/default/grub]
+      - [sed, -i, 's/managed=false/managed=true/g', /etc/NetworkManager/NetworkManager.conf]
       - [mkdir, -p, /autoinstall/backup]
       - [mv, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf, /autoinstall/backup]
       - [touch, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf]
