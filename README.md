@@ -1,7 +1,9 @@
 # ubuntu-autoinstall
 
 Custom Ubuntu 24.04 LTS autoinstall for testing purposes.
+
 Desktop Environment: KUbuntu
+
 Base image: Ubuntu Server 24.04 LTS
 
 Unprivileged user credentials:
