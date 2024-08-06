@@ -27,15 +27,31 @@ autoinstall:
         shell: /bin/bash
         lock_passwd: false
     runcmd:
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] allowing members of "adm" group to edit "/etc/hosts"
+        EOF
       - [chown, root:adm, /etc/hosts]
       - [chmod, '664', /etc/hosts]
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] tweaking unattended-upgrades
+        EOF
       - [sed, -i, '15 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
       - [sed, -i, '50 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
       - [sed, -i, '83 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
       - [sed, -i, '86 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] enabling GRUB timeout and boot splash
+        EOF
       - [sed, -i, 's/\GRUB_CMDLINE_LINUX_DEFAULT=\"/&quiet splash /', /etc/default/grub]
       - [sed, -i, 's/GRUB_TIMEOUT=0/GRUB_TIMEOUT=5/g', /etc/default/grub]
       - [sed, -i, 's/GRUB_TIMEOUT_STYLE=hidden/GRUB_TIMEOUT_STYLE=countdown/g', /etc/default/grub]
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] disabling netplan and forcing NetworkManager to handle network connections
+        EOF
       - [sed, -i, 's/managed=false/managed=true/g', /etc/NetworkManager/NetworkManager.conf]
       - [rm, -rf, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf]
       - [touch, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf]
@@ -49,11 +65,39 @@ autoinstall:
         cat << EOF > /etc/timezone
         Europe/Budapest
         EOF
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] setting timezone to "Europe/Budapest"
+        EOF
       - [ln, -sf, /usr/share/zoneinfo/Europe/Budapest, /etc/localtime]
       - [dpkg-reconfigure, -fnoninteractive, tzdata]
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] applying netplan config
+        EOF
       - [netplan, apply]
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] updating grub config
+        EOF
       - [update-grub]
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] connecting "bitwarden" snap to system's password manager service
+        EOF
       - [snap, connect, bitwarden:password-manager-service]
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] making log readable by "adm" group
+        EOF
+      - |
+        chmod 0644 /var/log/autoinstall_$(date "+%Y-%m-%d").log
+      - |
+        chown root:adm /var/log/autoinstall_$(date "+%Y-%m-%d").log
+      - |
+        cat << EOF >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
+        $(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] rebooting system
+        EOF
       - [systemctl, reboot]
   apt:
     sources:
@@ -121,9 +165,16 @@ autoinstall:
     - micro
     - minicom
   late-commands:
+    - curtin in-target --target=/target -- touch /var/log/autoinstall_$(date "+%Y-%m-%d").log
+    - curtin in-target --target=/target -- echo '$(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] running "systemctl disable systemd-networkd systemd-networkd.socket"' >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
     - curtin in-target --target=/target -- systemctl disable systemd-networkd systemd-networkd.socket
+    - curtin in-target --target=/target -- echo '$(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] running "systemctl enable docker libvirtd NetworkManager"' >> /var/log/autoinstall_$(date "+%Y-%m-%d").log 
     - curtin in-target --target=/target -- systemctl enable docker libvirtd NetworkManager
+    - curtin in-target --target=/target -- echo '$(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] running "apt-get remove ubuntu-server ubuntu-server-minimal -y"' >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
     - curtin in-target --target=/target -- apt-get remove ubuntu-server ubuntu-server-minimal -y
+    - curtin in-target --target=/target -- echo '$(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] running "apt-get update"' >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
     - curtin in-target --target=/target -- apt-get update
+    - curtin in-target --target=/target -- echo '$(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] running "apt-get upgrade -y"' >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
     - curtin in-target --target=/target -- apt-get upgrade -y
+    - curtin in-target --target=/target -- echo '$(date "+%Y-%m-%d %H:%M:%S") [miklosakos/ubuntu-autoinstall] running "apt-get autoremove -y"' >> /var/log/autoinstall_$(date "+%Y-%m-%d").log
     - curtin in-target --target=/target -- apt-get autoremove -y
