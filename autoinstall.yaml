@@ -49,13 +49,11 @@ autoinstall:
         cat << EOF > /etc/timezone
         Europe/Budapest
         EOF
+      - [ln, -sf, /usr/share/zoneinfo/Europe/Budapest, /etc/localtime]
+      - [dpkg-reconfigure, -fnoninteractive, tzdata]
       - [netplan, apply]
       - [update-grub]
       - [snap, connect, bitwarden:password-manager-service]
-      - [apt-get, remove, ubuntu-server, ubuntu-server-minimal, -y]
-      - [apt-get, update]
-      - [apt-get, upgrade, -y]
-      - [apt-get, autoremove, -y]
       - [systemctl, reboot]
   apt:
     sources:
@@ -115,3 +113,7 @@ autoinstall:
   late-commands:
     - curtin in-target --target=/target -- systemctl disable systemd-networkd systemd-networkd.socket
     - curtin in-target --target=/target -- systemctl enable docker libvirtd NetworkManager
+    - curtin in-target --target=/target -- apt-get remove ubuntu-server ubuntu-server-minimal -y
+    - curtin in-target --target=/target -- apt-get update
+    - curtin in-target --target=/target -- apt-get upgrade -y
+    - curtin in-target --target=/target -- apt-get autoremove -y
