@@ -17,6 +17,8 @@ autoinstall:
   ssh:
     install-server: yes
     allow-pw: yes
+  early-commands:
+   - echo 'linux-generic-hwe-24.04' > /run/kernel-meta-package
   user-data:
     timezone: geoip
     disable_root: false
