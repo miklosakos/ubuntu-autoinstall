@@ -1,4 +1,5 @@
 #cloud-config
+timezone: geoip
 autoinstall:
   version: 1
   interactive-sections:
@@ -45,16 +46,16 @@ autoinstall:
           version: 2
           renderer: NetworkManager
         EOF
-      - |
-        cat << EOF > /etc/timezone
-        Europe/Budapest
-        EOF
-      - [ln, -sf, /usr/share/zoneinfo/Europe/Budapest, /etc/localtime]
-      - [dpkg-reconfigure, -fnoninteractive, tzdata]
       - [netplan, apply]
       - [update-grub]
       - [snap, connect, bitwarden:password-manager-service]
       - [systemctl, reboot]
+ #     - |
+ #       cat << EOF > /etc/timezone
+ #       Europe/Budapest
+ #       EOF
+ #    - [ln, -sf, /usr/share/zoneinfo/Europe/Budapest, /etc/localtime]
+ #     - [dpkg-reconfigure, -fnoninteractive, tzdata]
   apt:
     sources:
       google-chrome-repo:
