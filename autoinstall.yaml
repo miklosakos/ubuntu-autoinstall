@@ -62,10 +62,14 @@ autoinstall:
     flavor: hwe
   updates: all
   snaps:
-    - thunderbird
-    - slack
-    - bitwarden
-    - code
+    - name: thunderbird
+      channel: stable
+      classic: false
+    - name: slack
+    - name: bitwarden
+    - name: code
+      channel: stable
+      classic: true
   packages:
     - mc
     - htop
