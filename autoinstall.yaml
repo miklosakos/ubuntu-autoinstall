@@ -1,7 +1,7 @@
 #cloud-config
-timezone: geoip
 autoinstall:
   version: 1
+  timezone: geoip
   interactive-sections:
     - network
 
