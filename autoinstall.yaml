@@ -24,6 +24,5 @@ autoinstall:
   packages:
     - mc
     - htop
-    - google-chrome-stable
 
 
