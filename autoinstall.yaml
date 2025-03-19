@@ -23,8 +23,6 @@ autoinstall:
     install: true
   kernel: 
     flavor: hwe
-  kernel-crash-dumps:
-    enabled: true
   updates: all
 
   apt:
