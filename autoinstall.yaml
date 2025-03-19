@@ -1,15 +1,56 @@
 #cloud-config
+timezone: geoip
 autoinstall:
   version: 1
   interactive-sections:
     - network
-    - identity
-    - storage
 
   locale: "en_US.UTF-8"
+  storage:
+    layout:
+      name: lvm
+      sizing-policy: all
+  identity:
+    hostname: test
+    realname: 'Default Admin user'
+    username: admin
+    password: '$y$j9T$Tv6FavKqhsv603nzZWMwQ/$qx7vdM23cIgIX3jkTuR7lZ7IiXHwTEkCVVKwV9x2dsC'
+  user-data:
+    timezone: geoip
+    disable_root: false
+    users:
+      - name: user
+        gecos: 'Standard User'
+        groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, lpadmin, dialout, libvirt, docker, ubridge, wireshark
+        passwd: '$y$j9T$N5JoGTfh1YxoU1WS2SneV.$RrrGHBClDxuZgGK7DRPkcpiv9r/ywsKAC7Kr7ZNo474'
+        shell: /bin/bash
+        lock_passwd: false
+
   refresh-installer:
     update: true
   
+  apt:
+    sources:
+      google-chrome.list:
+        source: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+        keyid: EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796
+      virtualbox.list:
+        source: deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian noble contrib
+        keyid: B9F8D658297AF3EFC18D5CDFA2F683C52980AECF
+      docker.list:
+        source: deb [arch=amd64] https://download.docker.com/linux/ubuntu noble stable
+        keyid: 8D81803C0EBFCD88
+      obs.list:
+        source: ppa:obsproject/obs-studio
+      hashicorp.list:
+        source: deb [arch=amd64] https://apt.releases.hashicorp.com noble main
+        keyid: 798AEC654E5C15428C8E42EEAA16FCBCA621E701
+      gns3.list:
+        source: ppa:gns3/ppa
+      azluxfr.list:
+        source: deb [arch=amd64] http://packages.azlux.fr/debian stable main
+        keyid: 98B824A5FA7D3A10FDB225B7CA548A0A0312D8E6
+
   ssh:
     install-server: true
     allow-pw: true
@@ -20,9 +61,53 @@ autoinstall:
   kernel: 
     flavor: hwe
   updates: all
-
+  snaps:
+    - thunderbird
+    - slack
+    - bitwarden
+    - code
   packages:
     - mc
     - htop
-
+    - google-chrome-stable
+    - mpv
+    - vlc
+    - ffmpeg
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+    - docker-ctop
+    - wireguard
+    - network-manager-openvpn
+    - iperf3
+    - ansible
+    - gimp
+    - wireshark
+    - net-tools
+    - dnsutils
+    - whois
+    - kazam
+    - tilix
+    - tcpdump
+    - gimp
+    - python3-venv
+    - obs-studio
+    - vagrant
+    - gns3-server
+    - gns3-gui
+    - micro
+    - minicom
+    - libreoffice
+    - virtualbox
+    - virt-manager
+  late-commands:
+    - curtin in-target --- usermod -aG adm,cdrom,dip,lxd,plugdev,netdev,kvm,lpadmin,dialout,libvirt,docker,ubridge,wireshark $(getent passwd | grep 1000 | cut -d ':' -f 1)
+    - curtin in-target --- chown root:adm /etc/hosts
+    - curtin in-target --- chmod 664 /etc/hosts
+    - sed -i '15 s,//,,' /etc/apt/apt.conf.d/50unattended-upgrades
+    - sed -i '50 s,//,,' /etc/apt/apt.conf.d/50unattended-upgrades
+    - sed -i '83 s,//,,' /etc/apt/apt.conf.d/50unattended-upgrades
+    - sed -i '86 s,//,,' /etc/apt/apt.conf.d/50unattended-upgrades       
 
