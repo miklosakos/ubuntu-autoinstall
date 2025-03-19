@@ -1,0 +1,128 @@
+#cloud-config
+timezone: geoip
+autoinstall:
+  version: 1
+  interactive-sections:
+    - network
+  locale: en_US
+  storage:
+    layout:
+      name: lvm
+      sizing-policy: all
+  identity:
+    hostname: test
+    realname: 'Default Admin user'
+    username: admin
+    password: '$y$j9T$Tv6FavKqhsv603nzZWMwQ/$qx7vdM23cIgIX3jkTuR7lZ7IiXHwTEkCVVKwV9x2dsC'
+  ssh:
+    install-server: yes
+    allow-pw: yes
+  early-commands:
+   - echo 'linux-generic-hwe-24.04' > /run/kernel-meta-package
+  user-data:
+    timezone: geoip
+    disable_root: false
+    users:
+      - name: user
+        gecos: 'Standard User'
+        groups: adm, cdrom, dip, lxd, plugdev, netdev, kvm, lpadmin, dialout, libvirt, docker, ubridge, wireshark
+        passwd: '$y$j9T$N5JoGTfh1YxoU1WS2SneV.$RrrGHBClDxuZgGK7DRPkcpiv9r/ywsKAC7Kr7ZNo474'
+        shell: /bin/bash
+        lock_passwd: false
+    runcmd:
+      - [chown, root:adm, /etc/hosts]
+      - [chmod, '664', /etc/hosts]
+      - [sed, -i, '15 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
+      - [sed, -i, '50 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
+      - [sed, -i, '83 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
+      - [sed, -i, '86 s,//,,', /etc/apt/apt.conf.d/50unattended-upgrades]
+      - [sed, -i, 's/\GRUB_CMDLINE_LINUX_DEFAULT=\"/&quiet splash /', /etc/default/grub]
+      - [sed, -i, 's/GRUB_TIMEOUT=0/GRUB_TIMEOUT=5/g', /etc/default/grub]
+      - [sed, -i, 's/GRUB_TIMEOUT_STYLE=hidden/GRUB_TIMEOUT_STYLE=countdown/g', /etc/default/grub]
+      - [sed, -i, 's/managed=false/managed=true/g', /etc/NetworkManager/NetworkManager.conf]
+      - [rm, -rf, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf]
+      - [touch, /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf]
+      - |
+        cat << EOF > /etc/netplan/50-cloud-init.yaml
+        network:
+          version: 2
+          renderer: NetworkManager
+        EOF
+      - [netplan, apply]
+      - [update-grub]
+      - [snap, connect, bitwarden:password-manager-service]
+      - [systemctl, reboot]
+ #     - |
+ #       cat << EOF > /etc/timezone
+ #       Europe/Budapest
+ #       EOF
+ #    - [ln, -sf, /usr/share/zoneinfo/Europe/Budapest, /etc/localtime]
+ #     - [dpkg-reconfigure, -fnoninteractive, tzdata]
+  apt:
+    sources:
+      google-chrome-repo:
+        source: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+        keyid: EB4C1BFD4F042F6DDDCCEC917721F63BD38B4796
+      virtualbox-repo:
+        source: deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian noble contrib
+        keyid: B9F8D658297AF3EFC18D5CDFA2F683C52980AECF
+      docker-repo:
+        source: deb [arch=amd64] https://download.docker.com/linux/ubuntu noble stable
+        keyid: 8D81803C0EBFCD88
+      azluxfr:
+        source: deb [arch=amd64] http://packages.azlux.fr/debian stable main
+        keyid: 98B824A5FA7D3A10FDB225B7CA548A0A0312D8E6
+      obs-studio:
+        source: ppa:obsproject/obs-studio
+      hashicorp:
+        source: deb [arch=amd64] https://apt.releases.hashicorp.com noble main
+        keyid: 798AEC654E5C15428C8E42EEAA16FCBCA621E701
+      gns3:
+        source: ppa:gns3/ppa
+  snaps:
+    - name: firefox
+    - name: brave
+    - name: thunderbird
+    - name: slack
+    - name: bitwarden
+    - name: code
+  packages:
+    - libreoffice
+    - kubuntu-desktop
+    - mc
+    - vlc
+    - ffmpeg
+    - google-chrome-stable
+    - virtualbox
+    - virt-manager
+    - htop
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+    - docker-ctop
+    - mpv
+    - wireguard
+    - network-manager-openvpn
+    - iperf3
+    - ansible
+    - gimp
+    - wireshark
+    - net-tools
+    - dnsutils
+    - whois
+    - kazam
+    - tilix
+    - tcpdump
+    - gimp
+    - python3-venv
+    - obs-studio
+    - vagrant
+    - gns3-server
+    - gns3-gui
+    - micro
+    - minicom
+  late-commands:
+    - curtin in-target --target=/target -- systemctl disable systemd-networkd systemd-networkd.socket
+    - curtin in-target --target=/target -- systemctl enable docker libvirtd NetworkManager
