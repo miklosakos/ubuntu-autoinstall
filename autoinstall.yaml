@@ -9,10 +9,6 @@ autoinstall:
   locale: "en_US.UTF-8"
   refresh-installer:
     update: true
-  keyboard:
-    layout: "us,hu"
-    variant: ""
-    toggle: alt_shift_toggle
   
   ssh:
     install-server: true
